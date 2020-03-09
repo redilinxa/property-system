@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS `properties` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `description` text NOT NULL,
+    `county` varchar(50) NOT NULL,
+    `country` varchar(50) NOT NULL,
+    `postcode` varchar(50) NOT NULL,
+    `address` text,
+    `image_full` varchar(256),
+    `image_thumbnail` varchar(256),
+    `latitude` varchar(256),
+    `longitude` varchar(256),
+    `num_bedrooms` int(3) NOT NULL,
+    `num_bathrooms` int(3)  NOT NULL,
+    `price` decimal(10,2) NOT NULL,
+    `property_type_id` int(11) NOT NULL,
+    `type` varchar(256) NOT NULL,
+    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=19;
