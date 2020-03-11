@@ -1,59 +1,66 @@
 <?php
-require_once ('config/database.php');
-require_once ('models/Property.php');
-
+/*
+ * This file is used to retrieve the ajax request from the event fired by the datatables request template.
+ * */
 // required headers
-header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json; charset=UTF-8");
-// instantiate database and product object
+// get database connection
+include ('../../config/database.php');
+
+// instantiate property object
+include ('../../models/Property.php');
+
 $database = new Database();
 $db = $database->getConnection();
 
-// initialize object
-$product = new Property($db);
+$property = new Property($db);
 
-// read products will be here
-// query products
-$stmt = $product->read();
+// read properties will be here
+// query properties
+$stmt = $property->read(isset($_GET["search"]["value"])? $_GET["search"]["value"]: '',
+    isset($_GET["order"])? $_GET["order"]: '',
+    isset($_GET["length"])? $_GET["length"]: -1,
+    isset($_GET["start"])? $_GET["start"]: 0
+);
 $num = $stmt->rowCount();
 
 // check if more than 0 record found
 $result_set=array();
-$result_set["properties"]=array();
-$result_set["num_records"]=$num;
 if($num>0){
-    // products array
-
     // retrieve our table contents
-    // fetch() is faster than fetchAll()
-    // http://stackoverflow.com/questions/2770630/pdofetchall-vs-pdofetch-in-a-loop
     while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)){
         // extract row
         // this will make $row['id'] to
         // just $name only
         extract($row);
 
-        $product_item=array(
-            "id" => $id,
-            "description" => html_entity_decode($description),
-            "county"=>$county,
-            "country"=>$country,
-            "address"=>$address,
-            "postcode"=>$postcode,
-            "image_full"=>$image_full,
-            "image_thumbnail"=>$image_thumbnail,
-            "latitude"=>$latitude,
-            "longitude"=>$longitude,
-            "num_bedrooms"=>$num_bedrooms,
-            "num_bathrooms"=>$num_bathrooms,
-            "price"=>$price,
-            "property_type_id"=>$property_type_id,
-            "type"=>$type,
-            "created_at"=>$created_at,
-            "updated_at"=>$updated_at
+        $property_item=array(
+            $county,
+            $country,
+            $town,
+            $postcode,
+             html_entity_decode($description),
+            $address,
+            "<a href='{$image_full}'>{$image_full}</a>",
+            $num_bedrooms,
+            $num_bathrooms,
+            $price,
+            $title,
+            $type,
+            '<a class="edit" title="Edit" id="'.$row["id"].'" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
+             <a class="delete" title="Delete" id="'.$row["id"].'" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>'
         );
-        array_push($result_set["properties"], $product_item);
+        array_push($result_set, $property_item);
     }
+    // set response code - 200 OK
+    http_response_code(200);
+    $output = array(
+        "recordsTotal"  =>  $property->readAllCount(),
+        "recordsFiltered" => $num,
+        "data"    => $result_set
+    );
+    // show products data in json format
+    echo json_encode($output);
 }else{
-    $errors = array("message" => "No products found.");
+    http_response_code(400);
+    echo json_encode(array("message" => "No properties found."));
 }

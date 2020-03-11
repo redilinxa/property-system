@@ -1,8 +1,10 @@
 CREATE TABLE IF NOT EXISTS `properties` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
+    `uuid` varchar(256) NOT NULL,
     `description` text NOT NULL,
     `county` varchar(50) NOT NULL,
     `country` varchar(50) NOT NULL,
+    `town` varchar(50) NOT NULL,
     `postcode` varchar(50) NOT NULL,
     `address` text,
     `image_full` varchar(256),
