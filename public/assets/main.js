@@ -20,8 +20,8 @@ $(document).ready(function(){
     });
 
     $('#add_button').click(function(){
-        $('#user_form')[0].reset();
-        $('.modal-title').text("Add User");
+        $('#property_form')[0].reset();
+        $('.modal-title').text("Add Property");
         $('#action').val("Add");
         $('#operation').val("Add");
         $('#user_uploaded_image').html('');
@@ -38,7 +38,7 @@ $(document).ready(function(){
         }
 
     });
-    $(document).on('submit', '#user_form', function(event){
+    $(document).on('submit', '#property_form', function(event){
         event.preventDefault();
         var firstName = $('#first_name').val();
         var lastName = $('#last_name').val();
@@ -63,8 +63,8 @@ $(document).ready(function(){
                 success:function(data)
                 {
                     alert(data);
-                    $('#user_form')[0].reset();
-                    $('#userModal').modal('hide');
+                    $('#property_form')[0].reset();
+                    $('#propertyModal').modal('hide');
                     dataTable.ajax.reload();
                 }
             });
@@ -76,20 +76,20 @@ $(document).ready(function(){
     });
 
     $(document).on('click', '.edit', function(){
-        var user_id = $(this).attr("id");
+        var property_id = $(this).attr("id");
         $.ajax({
             url:"fetch_single.php",
             method:"POST",
-            data:{user_id:user_id},
+            data:{property_id:property_id},
             dataType:"json",
             success:function(data)
             {
-                $('#userModal').modal('show');
+                $('#propertyModal').modal('show');
                 $('#first_name').val(data.first_name);
                 $('#last_name').val(data.last_name);
-                $('.modal-title').text("Edit User");
-                $('#user_id').val(user_id);
-                $('#user_uploaded_image').html(data.user_image);
+                $('.modal-title').text("Edit property");
+                $('#property_id').val(property_id);
+                $('#property_uploaded_image').html(data.property_image);
                 $('#action').val("Edit");
                 $('#operation').val("Edit");
             }
@@ -97,13 +97,13 @@ $(document).ready(function(){
     });
 
     $(document).on('click', '.delete', function(){
-        var user_id = $(this).attr("id");
+        var property_id = $(this).attr("id");
         if(confirm("Are you sure you want to delete this?"))
         {
             $.ajax({
                 url:"delete.php",
                 method:"POST",
-                data:{user_id:user_id},
+                data:{property_id:property_id},
                 success:function(data)
                 {
                     alert(data);

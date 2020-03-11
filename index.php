@@ -24,7 +24,7 @@
     <div class="table-responsive">
         <br />
         <div align="right">
-            <button type="button" id="add_button" data-toggle="modal" data-target="#userModal" class="btn btn-info btn-lg">Add</button>
+            <button type="button" id="add_button" data-toggle="modal" data-target="#propertyModal" class="btn btn-info btn-lg">Add</button>
             <button type="button" id="refresh" data-toggle="modal" class="btn btn-warning btn-lg">Refresh</button>
         </div>
         <br /><br />
