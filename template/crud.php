@@ -16,35 +16,36 @@ $types = $propertyTypes->readAll();
                 </div>
                 <div class="modal-body">
                     <label>Enter County</label>
-                    <input type="text" name="county" id="county" class="form-control" />
+                    <input type="text" name="county" id="county" class="form-control" required/>
                     <br />
                     <label>Enter Country</label>
-                    <input type="text" name="country" id="country" class="form-control" />
+                    <input type="text" name="country" id="country" class="form-control" required/>
                     <br />
                     <label>Enter Town</label>
-                    <input type="text" name="town" id="town" class="form-control" />
+                    <input type="text" name="town" id="town" class="form-control" required/>
                     <br />
                     <label>Enter Postcode</label>
-                    <input type="text" name="postcode" id="postcode" class="form-control" />
+                    <input type="text" name="postcode" id="postcode" class="form-control" required/>
                     <br />
                     <label>Enter Description</label>
-                    <input type="textarea" name="description" id="description" class="form-control" />
+                    <textarea name="description" id="description" class="form-control" required/></textarea>
                     <br />
                     <label>Enter Displayable Address</label>
-                    <input type="text" name="address" id="address" class="form-control" />
+                    <input type="text" name="address" id="address" class="form-control" required/>
                     <br />
                     <!--I think the following two input tag should be of type number rather then dropdown as the values are not predefined-->
                     <label>Enter No of Bedrooms</label>
-                    <input type="number" name="num_bedrooms" id="num_bedrooms" class="form-control" />
+                    <input type="number" name="num_bedrooms" id="num_bedrooms" class="form-control" required/>
                     <br />
                     <label>Enter No of Bathrooms</label>
-                    <input type="number" name="num_bathrooms" id="num_bathrooms" class="form-control" />
+                    <input type="number" name="num_bathrooms" id="num_bathrooms" class="form-control" required/>
                     <br />
                     <label>Enter Price</label>
-                    <input type="number" name="price" id="price" class="form-control" />
+                    <input type="text" name="price" id="price" class="form-control" pattern="^\$\d{1,3}(,\d{3})*(\.\d+)?$" value="" data-type="currency" placeholder="000.00" required/>
                     <br />
                     <label>Enter Type</label>
-                    <select name="property_type_id" id="property_type_id" class="form-control">
+                    <select name="property_type_id" id="property_type_id" class="form-control" required>
+                        <option value="">Choose a property type</option>
                         <?php foreach ($types as $type) {
                             echo "<option value='{$type['id']}'>{$type['title']}</option>";
                         } ?>
@@ -52,7 +53,7 @@ $types = $propertyTypes->readAll();
                     <br />
                     <label>For Rent/For Sale</label>
                     <label class="radio-inline">
-                        <input type="radio" id="rent" name="type" value="rent">Rent
+                        <input type="radio" id="rent" name="type" value="rent" required>Rent
                     </label>
                     <label class="radio-inline">
                         <input type="radio" id="sale" name="type" value="sale">Sale
@@ -60,7 +61,7 @@ $types = $propertyTypes->readAll();
                     <br />
                     <br />
                     <label>Select Image</label>
-                    <input type="file" name="image_full" id="property_image" />
+                    <input type="file" name="image_full" id="property_image"/>
                     <span id="property_uploaded_image"></span>
                     <input id="property_image_thumbnail" name="image_thumbnail" type="hidden" value="">
                 </div>

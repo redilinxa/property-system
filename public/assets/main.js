@@ -37,6 +37,10 @@ $(document).ready(function(){
                 "targets": [ 13 ],
                 "visible": false,
                 "searchable": false
+            },
+            {
+                "targets": [ 9 ],
+                "render": $.fn.dataTable.render.number( ',', '.', 2, '$' )
             }
         ],
         lengthMenu: [[5, 10, 15, 20, -1], [5, 10, 15, 20, 'All']],
@@ -47,12 +51,22 @@ $(document).ready(function(){
     });
     $(document).on('submit', '#property_form', function(event){
         event.preventDefault();
-        console.log('erdhi');
+        var formData = new FormData(this);
+        formData.set('price', formData.get('price').replace(/\$|,/g,''));
         var extension = $('#property_image').val().split('.').pop().toLowerCase();
+        if(extension != '')
+        {
+            if(jQuery.inArray(extension, ['png','jpg','jpeg']) == -1)
+            {
+                alert("Invalid Image File. Please choose one of the following: 'png','jpg','jpeg'.");
+                $('#property_image').val('');
+                return false;
+            }
+        }
         $.ajax({
             url:"/crud/property/createUpdate.php",
             method:'POST',
-            data:new FormData(this),
+            data:formData,
             contentType:false,
             processData:false,
         }).done((data) => {
@@ -65,6 +79,8 @@ $(document).ready(function(){
             console.log(error);
         });
     });
+    //validate form
+    $("#property_form").validate();
 
     $(document).on('click', '.edit', function(){
         var uuid = $(this).attr("id");
@@ -82,6 +98,7 @@ $(document).ready(function(){
             $('#operation').val("Edit");
             //manually fill the select box and the radio button.
             $('#property_form #property_type_id').val(data.property_type_id);
+            $('#property_form #description').val(data.description);
             $('#property_form input[name="type"][value="'+data.type+'"]').prop('checked', true);
             //fill in all the remaining data retrieved
             Object.keys(data).forEach(function (index) {
@@ -98,7 +115,6 @@ $(document).ready(function(){
     // Canvas function to resize the images
     function fileChange(e) {
         document.getElementById('property_image_thumbnail').value = '';
-        console.log("erdhi");
         var file = e.target.files[0];
 
         if (file.type == "image/jpeg" || file.type == "image/png") {
@@ -139,4 +155,88 @@ $(document).ready(function(){
         }
     }
 
+    // currency formatter.
+
+    $("input[data-type='currency']").on({
+        keyup: function() {
+            formatCurrency($(this));
+        },
+        blur: function() {
+            formatCurrency($(this), "blur");
+        }
+    });
+
+
+    function formatNumber(n) {
+        // format number 1000000 to 1,234,567
+        return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    }
+
+
+    function formatCurrency(input, blur) {
+        // appends $ to value, validates decimal side
+        // and puts cursor back in right position.
+
+        // get input value
+        var input_val = input.val();
+
+        // don't validate empty input
+        if (input_val === "") { return; }
+
+        // original length
+        var original_len = input_val.length;
+
+        // initial caret position
+        var caret_pos = input.prop("selectionStart");
+
+        // check for decimal
+        if (input_val.indexOf(".") >= 0) {
+
+            // get position of first decimal
+            // this prevents multiple decimals from
+            // being entered
+            var decimal_pos = input_val.indexOf(".");
+
+            // split number by decimal point
+            var left_side = input_val.substring(0, decimal_pos);
+            var right_side = input_val.substring(decimal_pos);
+
+            // add commas to left side of number
+            left_side = formatNumber(left_side);
+
+            // validate right side
+            right_side = formatNumber(right_side);
+
+            // On blur make sure 2 numbers after decimal
+            if (blur === "blur") {
+                right_side += "00";
+            }
+
+            // Limit decimal to only 2 digits
+            right_side = right_side.substring(0, 2);
+
+            // join number by .
+            input_val = "$" + left_side + "." + right_side;
+
+        } else {
+            // no decimal entered
+            // add commas to number
+            // remove all non-digits
+            input_val = formatNumber(input_val);
+            input_val = "$" + input_val;
+
+            // final formatting
+            if (blur === "blur") {
+                input_val += ".00";
+            }
+        }
+
+        // send updated string to input
+        input.val(input_val);
+
+        // put caret back in the right position
+        var updated_len = input_val.length;
+        caret_pos = updated_len - original_len + caret_pos;
+        input[0].setSelectionRange(caret_pos, caret_pos);
+    }
 });

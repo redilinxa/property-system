@@ -17,3 +17,7 @@ body
 {
     cursor: pointer;
 }
+
+label.error {
+    color: red;
+}
