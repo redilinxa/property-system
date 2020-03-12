@@ -78,8 +78,6 @@ class PropertyTypes
             $stmt->bindParam(":{$index}", $this->{$index});
         }
         $stmt->bindParam(":id", $this->id);
-        var_dump($stmt->debugDumpParams());
-
 
         // execute query
         return $stmt->execute();

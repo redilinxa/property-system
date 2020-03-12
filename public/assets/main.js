@@ -13,7 +13,7 @@ $(document).ready(function(){
             console.log(response);
             $datatabple.ajax.reload();
             this.disabled = false;
-        }).wa
+        })
         .fail((error) => {
             console.log(error);
         });
@@ -40,82 +40,58 @@ $(document).ready(function(){
     });
     $(document).on('submit', '#property_form', function(event){
         event.preventDefault();
-        var firstName = $('#first_name').val();
-        var lastName = $('#last_name').val();
-        var extension = $('#user_image').val().split('.').pop().toLowerCase();
+        console.log('erdhi');
+        var extension = $('#property_image').val().split('.').pop().toLowerCase();
+        console.log(extension);
         if(extension != '')
         {
+            console.log(extension+' 111');
             if(jQuery.inArray(extension, ['gif','png','jpg','jpeg']) == -1)
             {
+                console.log(extension+' 222');
                 alert("Invalid Image File");
-                $('#user_image').val('');
+                $('#property_image').val('');
                 return false;
             }
         }
-        if(firstName != '' && lastName != '')
-        {
-            $.ajax({
-                url:"insert.php",
-                method:'POST',
-                data:new FormData(this),
-                contentType:false,
-                processData:false,
-                success:function(data)
-                {
-                    alert(data);
-                    $('#property_form')[0].reset();
-                    $('#propertyModal').modal('hide');
-                    dataTable.ajax.reload();
-                }
-            });
-        }
-        else
-        {
-            alert("Both Fields are Required");
-        }
+        console.log("erdhi2");
+        $.ajax({
+            url:"/crud/property/createUpdate.php",
+            method:'POST',
+            data:new FormData(this),
+            contentType:false,
+            processData:false,
+            success:function(data)
+            {
+                console.log(data);
+                $('#property_form')[0].reset();
+                $('#propertyModal').modal('hide');
+                dataTable.ajax.reload();
+            }
+        });
     });
 
     $(document).on('click', '.edit', function(){
-        var property_id = $(this).attr("id");
+        var uuid = $(this).attr("id");
         $.ajax({
-            url:"fetch_single.php",
-            method:"POST",
-            data:{property_id:property_id},
+            url:"/crud/property/readOne.php",
+            method:"GET",
+            data:{uuid:uuid},
             dataType:"json",
             success:function(data)
             {
                 $('#propertyModal').modal('show');
-                $('#first_name').val(data.first_name);
-                $('#last_name').val(data.last_name);
                 $('.modal-title').text("Edit property");
-                $('#property_id').val(property_id);
+                $('#uuid').val(uuid);
                 $('#property_uploaded_image').html(data.property_image);
                 $('#action').val("Edit");
                 $('#operation').val("Edit");
+                //fill in all the data retrieved
+                Object.keys(data).forEach(function (index) {
+                    //console.log('#property_form input[name="'+ index +'"]');
+                    $('#property_form input[name="'+ index +'"]').val(data[index]);
+                });
             }
         })
     });
-
-    $(document).on('click', '.delete', function(){
-        var property_id = $(this).attr("id");
-        if(confirm("Are you sure you want to delete this?"))
-        {
-            $.ajax({
-                url:"delete.php",
-                method:"POST",
-                data:{property_id:property_id},
-                success:function(data)
-                {
-                    alert(data);
-                    dataTable.ajax.reload();
-                }
-            });
-        }
-        else
-        {
-            return false;
-        }
-    });
-
-
 });

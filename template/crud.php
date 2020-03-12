@@ -64,9 +64,9 @@ $types = $propertyTypes->readAll();
                     <span id="property_uploaded_image"></span>
                 </div>
                 <div class="modal-footer">
-                    <input type="hidden" name="property_id" id="property_id" />
+                    <input type="hidden" name="uuid" id="uuid" />
                     <input type="hidden" name="operation" id="operation" />
-                    <input type="button" name="action" id="action" class="btn btn-success" value="Add" />
+                    <input type="submit" name="action" id="action" class="btn btn-success" value="Add" />
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                 </div>
             </div>

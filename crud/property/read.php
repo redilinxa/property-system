@@ -29,8 +29,7 @@ if($num>0){
     // retrieve our table contents
     while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)){
         // extract row
-        // this will make $row['id'] to
-        // just $name only
+        // this will make $row['id'] to $id
         extract($row);
 
         $property_item=array(
@@ -46,8 +45,7 @@ if($num>0){
             $price,
             $title,
             $type,
-            '<a class="edit" title="Edit" id="'.$row["id"].'" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>
-             <a class="delete" title="Delete" id="'.$row["id"].'" data-toggle="tooltip"><i class="material-icons">&#xE872;</i></a>'
+            '<a class="edit" title="Edit" id="'.$row["uuid"].'" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>'
         );
         array_push($result_set, $property_item);
     }

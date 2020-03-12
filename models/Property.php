@@ -89,7 +89,7 @@ class Property
     public function readProperty($uuid){
         // select all query
         $query = "SELECT
-                *
+                p.*,t.title
             FROM
                 {$this->table_name} p
                 LEFT JOIN
@@ -104,7 +104,7 @@ class Property
         $stmt->bindParam(1, $uuid, PDO::PARAM_INT);
         // execute query
         $stmt->execute();
-        return $stmt->fetch();
+        return $stmt->fetch(\PDO::FETCH_ASSOC);
     }
 
     private function generateStatementParameters(array $row){
@@ -123,6 +123,7 @@ class Property
         if (!array_key_exists('uuid', $data)){
             $data['uuid'] = $this->generateUuid();
         }
+        unset($data['id']);
         // query to insert record
         $query = "INSERT INTO
                 " . $this->table_name . "
@@ -141,12 +142,11 @@ class Property
                 $types->save($data['property_type']);
             }
         }
-
         // execute query
-        return $stmt->execute();
+         return $stmt->execute();
     }
 
-    private function update(array $data){
+    public function update(array $data){
         // query to insert record
         $query = "UPDATE " . $this->table_name . "
             SET ". $this->generateStatementParameters($data) . "
@@ -195,13 +195,13 @@ class Property
     }
 
     private function generateUuid(){
-        $context = "";
-        $uuid = "";
-        uuid_create($context);
-
-        uuid_make($context, UUID_MAKE_V4);
-        uuid_export($context, UUID_FMT_STR, $uuid);
-        return trim($uuid);
+        // select UUID query
+        $query = "select uuid() as uuid;";
+        // prepare query statement
+        $stmt = $this->conn->prepare($query);
+        // execute query
+        $stmt->execute();
+        return $stmt->fetch()['uuid'];
     }
 
     private function get_object_public_vars($object) {
