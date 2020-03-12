@@ -60,8 +60,9 @@ $types = $propertyTypes->readAll();
                     <br />
                     <br />
                     <label>Select Image</label>
-                    <input type="file" name="property_image" id="property_image" />
+                    <input type="file" name="image_full" id="property_image" />
                     <span id="property_uploaded_image"></span>
+                    <input id="property_image_thumbnail" name="image_thumbnail" type="hidden" value="">
                 </div>
                 <div class="modal-footer">
                     <input type="hidden" name="uuid" id="uuid" />

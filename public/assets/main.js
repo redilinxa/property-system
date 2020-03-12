@@ -49,16 +49,6 @@ $(document).ready(function(){
         event.preventDefault();
         console.log('erdhi');
         var extension = $('#property_image').val().split('.').pop().toLowerCase();
-        console.log(extension);
-        if(extension != '')
-        {
-            if(jQuery.inArray(extension, ['gif','png','jpg','jpeg']) == -1)
-            {
-                alert("Invalid Image File");
-                $('#property_image').val('');
-                return false;
-            }
-        }
         $.ajax({
             url:"/crud/property/createUpdate.php",
             method:'POST',
@@ -95,12 +85,58 @@ $(document).ready(function(){
             $('#property_form input[name="type"][value="'+data.type+'"]').prop('checked', true);
             //fill in all the remaining data retrieved
             Object.keys(data).forEach(function (index) {
-                //console.log('#property_form input[name="'+ index +'"]');
-                $('#property_form input[name="'+ index +'"]').val(data[index]);
+                if (index !== 'image_full'){
+                    $('#property_form input[name="'+ index +'"]').val(data[index]);
+                }
             });
         })
         .fail((error) => {
             console.log(error);
         });
     });
+    document.getElementById('property_image').addEventListener('change', fileChange, false);
+    // Canvas function to resize the images
+    function fileChange(e) {
+        document.getElementById('property_image_thumbnail').value = '';
+        console.log("erdhi");
+        var file = e.target.files[0];
+
+        if (file.type == "image/jpeg" || file.type == "image/png") {
+
+            var reader = new FileReader();
+            reader.onload = function(readerEvent) {
+
+                var image = new Image();
+                image.onload = function(imageEvent) {
+                    var max_size = 300;
+                    var w = image.width;
+                    var h = image.height;
+
+                    if (w > h) {
+                        if (w > max_size) { h*=max_size/w; w=max_size;}
+                    } else{
+                        if (h > max_size) { w*=max_size/h; h=max_size;}
+                    }
+
+                    var canvas = document.createElement('canvas');
+                    canvas.width = w;
+                    canvas.height = h;
+                    canvas.getContext('2d').drawImage(image, 0, 0, w, h);
+
+                    if (file.type == "image/jpeg") {
+                        var dataURL = canvas.toDataURL("image/jpeg", 1.0);
+                    } else {
+                        var dataURL = canvas.toDataURL("image/png");
+                    }
+                    document.getElementById('property_image_thumbnail').value = dataURL;
+                }
+                image.src = readerEvent.target.result;
+            }
+            reader.readAsDataURL(file);
+        } else {
+            document.getElementById('inp_file').value = '';
+            alert('Please only select images in JPG- or PNG-format.');
+        }
+    }
+
 });
