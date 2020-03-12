@@ -30,13 +30,20 @@ $(document).ready(function(){
     var dataTable = $('#property-data').DataTable({
         "processing":true,
         //"serverSide":true,
+        order: [[ 13, "desc" ]],
         pageLength : 5,
+        "columnDefs": [
+            {
+                "targets": [ 13 ],
+                "visible": false,
+                "searchable": false
+            }
+        ],
         lengthMenu: [[5, 10, 15, 20, -1], [5, 10, 15, 20, 'All']],
         "ajax":{
             url:"/crud/property/read.php",
             type:"GET"
         }
-
     });
     $(document).on('submit', '#property_form', function(event){
         event.preventDefault();
@@ -45,29 +52,27 @@ $(document).ready(function(){
         console.log(extension);
         if(extension != '')
         {
-            console.log(extension+' 111');
             if(jQuery.inArray(extension, ['gif','png','jpg','jpeg']) == -1)
             {
-                console.log(extension+' 222');
                 alert("Invalid Image File");
                 $('#property_image').val('');
                 return false;
             }
         }
-        console.log("erdhi2");
         $.ajax({
             url:"/crud/property/createUpdate.php",
             method:'POST',
             data:new FormData(this),
             contentType:false,
             processData:false,
-            success:function(data)
-            {
-                console.log(data);
-                $('#property_form')[0].reset();
-                $('#propertyModal').modal('hide');
-                dataTable.ajax.reload();
-            }
+        }).done((data) => {
+            console.log(data);
+            $('#property_form')[0].reset();
+            $('#propertyModal').modal('hide');
+            dataTable.ajax.reload();
+        })
+        .fail((error) => {
+            console.log(error);
         });
     });
 
@@ -78,20 +83,24 @@ $(document).ready(function(){
             method:"GET",
             data:{uuid:uuid},
             dataType:"json",
-            success:function(data)
-            {
-                $('#propertyModal').modal('show');
-                $('.modal-title').text("Edit property");
-                $('#uuid').val(uuid);
-                $('#property_uploaded_image').html(data.property_image);
-                $('#action').val("Edit");
-                $('#operation').val("Edit");
-                //fill in all the data retrieved
-                Object.keys(data).forEach(function (index) {
-                    //console.log('#property_form input[name="'+ index +'"]');
-                    $('#property_form input[name="'+ index +'"]').val(data[index]);
-                });
-            }
+        }).done((data) => {
+            $('#propertyModal').modal('show');
+            $('.modal-title').text("Edit property");
+            $('#uuid').val(uuid);
+            $('#property_uploaded_image').html(data.property_image);
+            $('#action').val("Edit");
+            $('#operation').val("Edit");
+            //manually fill the select box and the radio button.
+            $('#property_form #property_type_id').val(data.property_type_id);
+            $('#property_form input[name="type"][value="'+data.type+'"]').prop('checked', true);
+            //fill in all the remaining data retrieved
+            Object.keys(data).forEach(function (index) {
+                //console.log('#property_form input[name="'+ index +'"]');
+                $('#property_form input[name="'+ index +'"]').val(data[index]);
+            });
         })
+        .fail((error) => {
+            console.log(error);
+        });
     });
 });

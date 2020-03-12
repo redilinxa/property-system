@@ -45,6 +45,7 @@
                 <th>Property Type</th>
                 <th>For Sale / For Rent</th>
                 <th>Actions</th>
+                <th>Updated</th>
             </tr>
             </thead>
         </table>

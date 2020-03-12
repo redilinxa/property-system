@@ -45,7 +45,7 @@ if(
         http_response_code(201);
 
         // tell the user
-        echo json_encode(array("message" => "Property was created."));
+        echo json_encode(array("message" => "Property was saved."));
     }
 
     // if unable to create the property, tell the user

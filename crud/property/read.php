@@ -45,7 +45,8 @@ if($num>0){
             $price,
             $title,
             $type,
-            '<a class="edit" title="Edit" id="'.$row["uuid"].'" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>'
+            '<a class="edit pointer-link" title="Edit" id="'.$row["uuid"].'" data-toggle="tooltip"><i class="material-icons">&#xE254;</i></a>',
+            $updated_at
         );
         array_push($result_set, $property_item);
     }

@@ -54,11 +54,11 @@ class Property
         }
         if(!empty($order))
         {
-            $query .= 'ORDER BY p.'.$_POST['order']['0']['column'].' '.$_POST['order']['0']['dir'].' ';
+            $query .= 'ORDER BY p.updated_at DESC, p.'.$_POST['order']['0']['column'].' '.$_POST['order']['0']['dir'].' ';
         }
         else
         {
-            $query .= 'ORDER BY p.id DESC ';
+            $query .= 'ORDER BY p.updated_at DESC ';
         }
         if($length != -1)
         {
@@ -120,7 +120,7 @@ class Property
     // create product
     public function create(array $data){
         //generate uuid for the items coming from admin
-        if (!array_key_exists('uuid', $data)){
+        if (!array_key_exists('uuid', $data) || empty($data['uuid'])){
             $data['uuid'] = $this->generateUuid();
         }
         unset($data['id']);
@@ -147,6 +147,11 @@ class Property
     }
 
     public function update(array $data){
+
+        //Automatically add updated date for update transactions
+        if (!isset($data['updated_at'])){
+            $data['updated_at'] = date('Y-m-d H:i:s');
+        }
         // query to insert record
         $query = "UPDATE " . $this->table_name . "
             SET ". $this->generateStatementParameters($data) . "
