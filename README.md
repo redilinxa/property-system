@@ -51,6 +51,3 @@ the action column to display the popup with the filled in data.
 - Missing refresh of the property types on addition after initial load from api. Need hard refresh from browser before clicking Add or Edit.
 - Design issues in radio button.
 
-Overall i can say that for the existing specification the application does what is intended.
-The means behind the completion of this task was for me to be able to show as much diverse implementation logic and technologies
-in order for you to be able to understand my existing knowledge as a developer.
